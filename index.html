@@ -138,6 +138,48 @@ h1 {
     text-transform: uppercase;
 }
 
+.abas {
+    display: flex;
+    gap: 10px;
+    margin: 0 0 24px;
+    flex-wrap: wrap;
+}
+
+.aba-botao {
+    appearance: none;
+    border: 1px solid rgba(190, 255, 205, 0.12);
+    background: rgba(17, 29, 22, 0.88);
+    color: var(--texto-suave);
+    border-radius: 999px;
+    padding: 12px 18px;
+    font: inherit;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.aba-botao:hover {
+    border-color: rgba(93, 223, 133, 0.32);
+    color: var(--texto);
+}
+
+.aba-botao.ativa {
+    background: linear-gradient(180deg, rgba(104, 212, 136, 0.2), rgba(104, 212, 136, 0.08));
+    border-color: rgba(104, 212, 136, 0.5);
+    color: var(--texto);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+}
+
+.aba-painel {
+    display: none;
+}
+
+.aba-painel.ativa {
+    display: block;
+}
+
 .podio {
     display: flex;
     align-items: flex-end;
@@ -379,6 +421,90 @@ tr:last-child td { border-bottom: none; }
 .pts-jogo.b1 { color: var(--prata); }
 .pts-jogo.b0 { color: rgba(226, 101, 79, 0.7); }
 
+.palpites-dia {
+    margin-bottom: 34px;
+}
+
+.secao-cabecalho {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.secao-subtitulo {
+    color: var(--texto-suave);
+    font-size: 13px;
+    text-align: right;
+}
+
+.palpite-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.palpite-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border: 1px solid var(--linha);
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+.palpite-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--texto-suave);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.palpite-jogo {
+    margin: 12px 0 14px;
+    font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    font-size: 28px;
+    line-height: 1.05;
+    color: var(--texto);
+}
+
+.palpite-tabela-wrap {
+    overflow-x: auto;
+}
+
+.palpite-tabela {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.palpite-tabela th,
+.palpite-tabela td {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--linha);
+    text-align: left;
+}
+
+.palpite-tabela th:last-child,
+.palpite-tabela td:last-child {
+    text-align: right;
+}
+
+.palpite-tabela tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.estado-vazio {
+    background: rgba(17, 29, 22, 0.88);
+    border: 1px dashed rgba(190, 255, 205, 0.14);
+    border-radius: 18px;
+    padding: 24px 18px;
+    color: var(--texto-suave);
+    text-align: center;
+}
+
 footer {
     margin-top: 56px;
     text-align: center;
@@ -397,6 +523,8 @@ footer .legenda {
 
 @media (max-width: 760px) {
     .painel-status { grid-template-columns: repeat(2, 1fr); }
+    .secao-cabecalho { align-items: start; flex-direction: column; }
+    .secao-subtitulo { text-align: left; }
     .podio { gap: 8px; }
     .degrau { padding-left: 6px; padding-right: 6px; }
     .degrau .pontos { font-size: 26px; }
@@ -418,7 +546,7 @@ footer .legenda {
     <header>
       <div class="trofeu">🏆</div>
       <h1>Ranking do Bolão</h1>
-      <p class="subtitulo"><b>Pedro Tramontina</b> lidera com <b>36 pontos</b> | atualizado em 16/06/2026 02:59</p>
+      <p class="subtitulo"><b>Pedro Tramontina</b> lidera com <b>36 pontos</b> | atualizado em 16/06/2026 16:10</p>
     </header>
 
     <section class="painel-status">
@@ -440,30 +568,36 @@ footer .legenda {
       </div>
     </section>
 
-    <section class="podio">
-      <div class="degrau p2">
-        <div class="rotulo">2º Lugar</div>
-        <div class="medalha">🥈</div>
-        <div class="nome">Pedro Tomonaga</div>
-        <div class="pontos">34</div>
-      </div>
-      <div class="degrau p1">
-        <div class="rotulo">1º Lugar</div>
-        <div class="medalha">🏆</div>
-        <div class="nome">Pedro Tramontina</div>
-        <div class="pontos">36</div>
-      </div>
-      <div class="degrau p3">
-        <div class="rotulo">3º Lugar</div>
-        <div class="medalha">🥉</div>
-        <div class="nome">Leo Pontes</div>
-        <div class="pontos">29</div>
-      </div>
-    </section>
+    <nav class="abas" aria-label="Navegacao principal">
+      <button class="aba-botao ativa" type="button" data-aba="pontuacao">Pontuacao</button>
+      <button class="aba-botao" type="button" data-aba="jogos">Jogos de hoje</button>
+    </nav>
 
-    <section>
-      <h2 class="secao-titulo">Ranking Completo</h2>
-      
+    <section class="aba-painel ativa" data-painel="pontuacao">
+      <section class="podio">
+        <div class="degrau p2">
+          <div class="rotulo">2º Lugar</div>
+          <div class="medalha">🥈</div>
+          <div class="nome">Pedro Tomonaga</div>
+          <div class="pontos">34</div>
+        </div>
+        <div class="degrau p1">
+          <div class="rotulo">1º Lugar</div>
+          <div class="medalha">🏆</div>
+          <div class="nome">Pedro Tramontina</div>
+          <div class="pontos">36</div>
+        </div>
+        <div class="degrau p3">
+          <div class="rotulo">3º Lugar</div>
+          <div class="medalha">🥉</div>
+          <div class="nome">Leo Pontes</div>
+          <div class="pontos">29</div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="secao-titulo">Ranking Completo</h2>
+        
             <details class="cartao top1" style="--i:0">
               <summary>
                 <div class="posicao">#1</div>
@@ -1848,6 +1982,267 @@ footer .legenda {
               </div>
             </details>
             
+      </section>
+    </section>
+
+    <section class="aba-painel" data-painel="jogos">
+      
+    <section class="palpites-dia">
+      <div class="secao-cabecalho">
+        <h2 class="secao-titulo">Palpites dos jogos de hoje</h2>
+        <p class="secao-subtitulo">Jogos de 16/06/2026</p>
+      </div>
+      
+      <div class="palpite-grid">
+        
+            <article class="palpite-card">
+              <div class="palpite-meta">
+                <span>1ª rodada</span>
+                <span>16/06</span>
+              </div>
+              <div class="palpite-jogo">França x Senegal</div>
+              <div class="palpite-tabela-wrap">
+                <table class="palpite-tabela">
+                  <thead>
+                    <tr>
+                      <th>Participante</th>
+                      <th>Palpite</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                <tr>
+                  <td>Arthur</td>
+                  <td><span class="placar">3 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Higor</td>
+                  <td><span class="placar">3 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Kelvin</td>
+                  <td><span class="placar">2 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Leo Fernandes</td>
+                  <td><span class="placar">2 x 0</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Leo Pontes</td>
+                  <td><span class="placar">3 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Marcelinho</td>
+                  <td><span class="placar">3 x 0</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Pedro Tomonaga</td>
+                  <td><span class="placar">5 x 0</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Pedro Tramontina</td>
+                  <td><span class="placar">2 x 1</span></td>
+                </tr>
+                
+                  </tbody>
+                </table>
+              </div>
+            </article>
+             
+            <article class="palpite-card">
+              <div class="palpite-meta">
+                <span>1ª rodada</span>
+                <span>16/06</span>
+              </div>
+              <div class="palpite-jogo">Iraque x Noruega</div>
+              <div class="palpite-tabela-wrap">
+                <table class="palpite-tabela">
+                  <thead>
+                    <tr>
+                      <th>Participante</th>
+                      <th>Palpite</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                <tr>
+                  <td>Arthur</td>
+                  <td><span class="placar">0 x 2</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Higor</td>
+                  <td><span class="placar">1 x 2</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Kelvin</td>
+                  <td><span class="placar">0 x 2</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Leo Fernandes</td>
+                  <td><span class="placar">1 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Leo Pontes</td>
+                  <td><span class="placar">0 x 2</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Marcelinho</td>
+                  <td><span class="placar">1 x 2</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Pedro Tomonaga</td>
+                  <td><span class="placar">1 x 4</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Pedro Tramontina</td>
+                  <td><span class="placar">0 x 2</span></td>
+                </tr>
+                
+                  </tbody>
+                </table>
+              </div>
+            </article>
+             
+            <article class="palpite-card">
+              <div class="palpite-meta">
+                <span>1ª rodada</span>
+                <span>16/06</span>
+              </div>
+              <div class="palpite-jogo">Argentina x Argélia</div>
+              <div class="palpite-tabela-wrap">
+                <table class="palpite-tabela">
+                  <thead>
+                    <tr>
+                      <th>Participante</th>
+                      <th>Palpite</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                <tr>
+                  <td>Arthur</td>
+                  <td><span class="placar">2 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Higor</td>
+                  <td><span class="placar">3 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Kelvin</td>
+                  <td><span class="placar">2 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Leo Fernandes</td>
+                  <td><span class="placar">2 x 0</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Leo Pontes</td>
+                  <td><span class="placar">3 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Marcelinho</td>
+                  <td><span class="placar">2 x 0</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Pedro Tomonaga</td>
+                  <td><span class="placar">4 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Pedro Tramontina</td>
+                  <td><span class="placar">2 x 0</span></td>
+                </tr>
+                
+                  </tbody>
+                </table>
+              </div>
+            </article>
+             
+            <article class="palpite-card">
+              <div class="palpite-meta">
+                <span>1ª rodada</span>
+                <span>16/06</span>
+              </div>
+              <div class="palpite-jogo">Áustria x Jordânia</div>
+              <div class="palpite-tabela-wrap">
+                <table class="palpite-tabela">
+                  <thead>
+                    <tr>
+                      <th>Participante</th>
+                      <th>Palpite</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                <tr>
+                  <td>Arthur</td>
+                  <td><span class="placar">4 x 0</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Higor</td>
+                  <td><span class="placar">2 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Kelvin</td>
+                  <td><span class="placar">2 x 0</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Leo Fernandes</td>
+                  <td><span class="placar">1 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Leo Pontes</td>
+                  <td><span class="placar">2 x 0</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Marcelinho</td>
+                  <td><span class="placar">1 x 2</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Pedro Tomonaga</td>
+                  <td><span class="placar">1 x 1</span></td>
+                </tr>
+                 
+                <tr>
+                  <td>Pedro Tramontina</td>
+                  <td><span class="placar">1 x 0</span></td>
+                </tr>
+                
+                  </tbody>
+                </table>
+              </div>
+            </article>
+            
+      </div>
+        
+    </section>
+    
     </section>
 
     <footer>
@@ -1861,5 +2256,20 @@ footer .legenda {
       <div>Abra o nome de cada participante para ver os palpites comparados ao resultado real.</div>
     </footer>
   </div>
+  <script>
+    const botoesAba = document.querySelectorAll(".aba-botao");
+    const paineisAba = document.querySelectorAll(".aba-painel");
+
+    botoesAba.forEach((botao) => {
+      botao.addEventListener("click", () => {
+        const aba = botao.dataset.aba;
+
+        botoesAba.forEach((item) => item.classList.toggle("ativa", item === botao));
+        paineisAba.forEach((painel) => {
+          painel.classList.toggle("ativa", painel.dataset.painel === aba);
+        });
+      });
+    });
+  </script>
 </body>
 </html>
