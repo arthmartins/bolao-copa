@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Palpites 16 avos</title>
+  <style>
+:root {
+    --bg: #09110d;
+    --painel: rgba(15, 27, 20, 0.94);
+    --painel-claro: rgba(23, 38, 29, 0.96);
+    --linha: rgba(174, 248, 189, 0.12);
+    --texto: #f4f1e6;
+    --suave: #9fb5a4;
+    --grama: #71dd92;
+    --ouro: #f0c454;
+    --erro: #ff8f74;
+}
+
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: Outfit, "Segoe UI", sans-serif;
+    color: var(--texto);
+    background:
+        radial-gradient(circle at top, rgba(113, 221, 146, 0.08), transparent 34%),
+        linear-gradient(180deg, #0b140f 0%, #09110d 100%);
+}
+
+a { color: inherit; }
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 36px 18px 72px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.voltar {
+    text-decoration: none;
+    border: 1px solid var(--linha);
+    border-radius: 999px;
+    padding: 10px 16px;
+    color: var(--suave);
+}
+
+h1 {
+    margin: 0;
+    font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    font-size: clamp(34px, 5vw, 58px);
+    letter-spacing: 0.04em;
+    color: var(--ouro);
+}
+
+.subtitulo {
+    margin: 12px 0 0;
+    color: var(--suave);
+    max-width: 760px;
+    line-height: 1.5;
+}
+
+.painel {
+    margin-top: 26px;
+    background: var(--painel);
+    border: 1px solid var(--linha);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0 22px 50px rgba(0, 0, 0, 0.25);
+}
+
+.campo-nome {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.campo-nome span,
+.placar-grid span,
+.grupo-cabecalho p {
+    color: var(--suave);
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%;
+    border: 1px solid rgba(174, 248, 189, 0.15);
+    background: var(--painel-claro);
+    color: var(--texto);
+    border-radius: 14px;
+    padding: 14px 16px;
+    font: inherit;
+}
+
+.grupo-data + .grupo-data {
+    margin-top: 28px;
+}
+
+.grupo-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: end;
+    margin-bottom: 14px;
+}
+
+.grupo-cabecalho h2 {
+    margin: 0;
+    font-size: 24px;
+    color: var(--grama);
+}
+
+.jogos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.jogo-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border: 1px solid var(--linha);
+    border-radius: 22px;
+    padding: 18px;
+}
+
+.jogo-topo {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--suave);
+}
+
+.confronto {
+    margin: 14px 0 16px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 10px;
+    align-items: center;
+    text-align: center;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.15;
+}
+
+.versus {
+    color: var(--ouro);
+    font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+}
+
+.placar-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.placar-grid label {
+    display: grid;
+    gap: 8px;
+}
+
+.campo-classificado {
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.acoes {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.enviar {
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #f0c454, #d7a937);
+    color: #201700;
+    font: inherit;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 15px 24px;
+    cursor: pointer;
+}
+
+.enviar:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.status {
+    min-height: 22px;
+    color: var(--suave);
+}
+
+.status.erro {
+    color: var(--erro);
+}
+
+.status.ok {
+    color: var(--grama);
+}
+
+.alerta {
+    margin-bottom: 18px;
+    border: 1px solid rgba(255, 143, 116, 0.25);
+    background: rgba(255, 143, 116, 0.08);
+    border-radius: 16px;
+    padding: 16px;
+    color: #ffd1c7;
+}
+
+iframe {
+    display: none;
+}
+
+@media (max-width: 700px) {
+    .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .painel {
+        padding: 18px;
+    }
+
+    .confronto {
+        font-size: 20px;
+    }
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <a class="voltar" href="index.html">Voltar para o ranking</a>
+    </div>
+
+    <header>
+      <h1>Palpites 16 avos</h1>
+      <p class="subtitulo">Preencha seu nome, informe os placares de todos os jogos e envie. O site manda os dados para um Web App do Google Apps Script, que grava tudo no Google Sheets.</p>
+    </header>
+
+    <section class="painel">
+      
+        <div class="alerta">
+          Defina a URL do Web App do Google Apps Script no notebook antes de publicar esta pagina.
+        </div>
+        
+
+      <form id="palpites-form">
+        <label class="campo-nome">
+          <span>Seu nome</span>
+          <input type="text" id="nome-participante" name="nome" maxlength="80" required>
+        </label>
+
+        
+            <section class="grupo-data">
+              <div class="grupo-cabecalho">
+                <h2>28/06/2026</h2>
+                <p>1 jogo(s)</p>
+              </div>
+              <div class="jogos-grid">
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">28/06/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>África do Sul</span>
+                    <span class="versus">x</span>
+                    <span>Canadá</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>África do Sul</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-01" required>
+                    </label>
+                    <label>
+                      <span>Canadá</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-01" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-01" required>
+                      <option value="">Selecione</option><option value="África do Sul">África do Sul<\/option><option value="Canadá">Canadá<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+              </div>
+            </section>
+            
+            <section class="grupo-data">
+              <div class="grupo-cabecalho">
+                <h2>29/06/2026</h2>
+                <p>3 jogo(s)</p>
+              </div>
+              <div class="jogos-grid">
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">29/06/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>Brasil</span>
+                    <span class="versus">x</span>
+                    <span>Japão</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>Brasil</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-02" required>
+                    </label>
+                    <label>
+                      <span>Japão</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-02" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-02" required>
+                      <option value="">Selecione</option><option value="Brasil">Brasil<\/option><option value="Japão">Japão<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">29/06/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>Alemanha</span>
+                    <span class="versus">x</span>
+                    <span>Paraguai</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>Alemanha</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-03" required>
+                    </label>
+                    <label>
+                      <span>Paraguai</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-03" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-03" required>
+                      <option value="">Selecione</option><option value="Alemanha">Alemanha<\/option><option value="Paraguai">Paraguai<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">29/06/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>Holanda</span>
+                    <span class="versus">x</span>
+                    <span>Marrocos</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>Holanda</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-04" required>
+                    </label>
+                    <label>
+                      <span>Marrocos</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-04" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-04" required>
+                      <option value="">Selecione</option><option value="Holanda">Holanda<\/option><option value="Marrocos">Marrocos<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+              </div>
+            </section>
+            
+            <section class="grupo-data">
+              <div class="grupo-cabecalho">
+                <h2>30/06/2026</h2>
+                <p>3 jogo(s)</p>
+              </div>
+              <div class="jogos-grid">
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">30/06/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>Costa do Marfim</span>
+                    <span class="versus">x</span>
+                    <span>Noruega</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>Costa do Marfim</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-05" required>
+                    </label>
+                    <label>
+                      <span>Noruega</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-05" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-05" required>
+                      <option value="">Selecione</option><option value="Costa do Marfim">Costa do Marfim<\/option><option value="Noruega">Noruega<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">30/06/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>França</span>
+                    <span class="versus">x</span>
+                    <span>Suécia</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>França</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-06" required>
+                    </label>
+                    <label>
+                      <span>Suécia</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-06" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-06" required>
+                      <option value="">Selecione</option><option value="França">França<\/option><option value="Suécia">Suécia<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">30/06/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>México</span>
+                    <span class="versus">x</span>
+                    <span>3º Grupo C/E/F/H/I</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>México</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-07" required>
+                    </label>
+                    <label>
+                      <span>3º Grupo C/E/F/H/I</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-07" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-07" required>
+                      <option value="">Selecione</option><option value="México">México<\/option><option value="3º Grupo C/E/F/H/I">3º Grupo C/E/F/H/I<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+              </div>
+            </section>
+            
+            <section class="grupo-data">
+              <div class="grupo-cabecalho">
+                <h2>01/07/2026</h2>
+                <p>3 jogo(s)</p>
+              </div>
+              <div class="jogos-grid">
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">01/07/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>1º Grupo L</span>
+                    <span class="versus">x</span>
+                    <span>3º Grupo E/H/I/J/K</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>1º Grupo L</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-08" required>
+                    </label>
+                    <label>
+                      <span>3º Grupo E/H/I/J/K</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-08" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-08" required>
+                      <option value="">Selecione</option><option value="1º Grupo L">1º Grupo L<\/option><option value="3º Grupo E/H/I/J/K">3º Grupo E/H/I/J/K<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">01/07/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>Bélgica</span>
+                    <span class="versus">x</span>
+                    <span>3º Grupo A/E/H/I/J</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>Bélgica</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-09" required>
+                    </label>
+                    <label>
+                      <span>3º Grupo A/E/H/I/J</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-09" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-09" required>
+                      <option value="">Selecione</option><option value="Bélgica">Bélgica<\/option><option value="3º Grupo A/E/H/I/J">3º Grupo A/E/H/I/J<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">01/07/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>Estados Unidos</span>
+                    <span class="versus">x</span>
+                    <span>Bósnia e Herzegovina</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>Estados Unidos</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-10" required>
+                    </label>
+                    <label>
+                      <span>Bósnia e Herzegovina</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-10" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-10" required>
+                      <option value="">Selecione</option><option value="Estados Unidos">Estados Unidos<\/option><option value="Bósnia e Herzegovina">Bósnia e Herzegovina<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+              </div>
+            </section>
+            
+            <section class="grupo-data">
+              <div class="grupo-cabecalho">
+                <h2>02/07/2026</h2>
+                <p>2 jogo(s)</p>
+              </div>
+              <div class="jogos-grid">
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">02/07/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>Espanha</span>
+                    <span class="versus">x</span>
+                    <span>2º Grupo J</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>Espanha</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-11" required>
+                    </label>
+                    <label>
+                      <span>2º Grupo J</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-11" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-11" required>
+                      <option value="">Selecione</option><option value="Espanha">Espanha<\/option><option value="2º Grupo J">2º Grupo J<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">02/07/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>2º Grupo K</span>
+                    <span class="versus">x</span>
+                    <span>2º Grupo L</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>2º Grupo K</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-12" required>
+                    </label>
+                    <label>
+                      <span>2º Grupo L</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-12" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-12" required>
+                      <option value="">Selecione</option><option value="2º Grupo K">2º Grupo K<\/option><option value="2º Grupo L">2º Grupo L<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+              </div>
+            </section>
+            
+            <section class="grupo-data">
+              <div class="grupo-cabecalho">
+                <h2>03/07/2026</h2>
+                <p>4 jogo(s)</p>
+              </div>
+              <div class="jogos-grid">
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">03/07/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>Suíça</span>
+                    <span class="versus">x</span>
+                    <span>3º Grupo E/F/G/I/J</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>Suíça</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-13" required>
+                    </label>
+                    <label>
+                      <span>3º Grupo E/F/G/I/J</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-13" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-13" required>
+                      <option value="">Selecione</option><option value="Suíça">Suíça<\/option><option value="3º Grupo E/F/G/I/J">3º Grupo E/F/G/I/J<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">03/07/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>Austrália</span>
+                    <span class="versus">x</span>
+                    <span>Egito</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>Austrália</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-14" required>
+                    </label>
+                    <label>
+                      <span>Egito</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-14" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-14" required>
+                      <option value="">Selecione</option><option value="Austrália">Austrália<\/option><option value="Egito">Egito<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">03/07/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>Argentina</span>
+                    <span class="versus">x</span>
+                    <span>Cabo Verde</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>Argentina</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-15" required>
+                    </label>
+                    <label>
+                      <span>Cabo Verde</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-15" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-15" required>
+                      <option value="">Selecione</option><option value="Argentina">Argentina<\/option><option value="Cabo Verde">Cabo Verde<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+                <article class="jogo-card">
+                  <div class="jogo-topo">
+                    <span class="fase">16 avos</span>
+                    <span class="data">03/07/2026</span>
+                  </div>
+                  <div class="confronto">
+                    <span>1º Grupo K</span>
+                    <span class="versus">x</span>
+                    <span>3º Grupo D/E/I/J/L</span>
+                  </div>
+                  <div class="placar-grid">
+                    <label>
+                      <span>1º Grupo K</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="a" data-jogo-id="jogo-16" required>
+                    </label>
+                    <label>
+                      <span>3º Grupo D/E/I/J/L</span>
+                      <input type="number" min="0" max="20" inputmode="numeric" data-time="b" data-jogo-id="jogo-16" required>
+                    </label>
+                  </div>
+                  <label class="campo-classificado">
+                    <span>Quem se classifica?</span>
+                    <select data-classificado-jogo-id="jogo-16" required>
+                      <option value="">Selecione</option><option value="1º Grupo K">1º Grupo K<\/option><option value="3º Grupo D/E/I/J/L">3º Grupo D/E/I/J/L<\/option>
+                    </select>
+                  </label>
+                </article>
+                
+              </div>
+            </section>
+            
+
+        <div class="acoes">
+          <button class="enviar" type="submit" disabled>Enviar palpites</button>
+          <div class="status" id="status-envio"></div>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <form id="post-form" method="POST" action="https://script.google.com/macros/s/AKfycbzqZg-uZUwPBWDoblw970B0fRhKVrgjtFvvkhWm1Mlhls0E9NtMYvaY6E71a1-_MPs/exec" target="resposta-frame">
+    <input type="hidden" name="payload" id="payload-campo">
+  </form>
+  <iframe name="resposta-frame" id="resposta-frame"></iframe>
+
+  <script>
+    const jogos = [{"id": "jogo-01", "ordem": 1, "fase": "16 avos", "selecao_1": "África do Sul", "selecao_2": "Canadá", "data_jogo": "28/06/2026"}, {"id": "jogo-02", "ordem": 2, "fase": "16 avos", "selecao_1": "Brasil", "selecao_2": "Japão", "data_jogo": "29/06/2026"}, {"id": "jogo-03", "ordem": 3, "fase": "16 avos", "selecao_1": "Alemanha", "selecao_2": "Paraguai", "data_jogo": "29/06/2026"}, {"id": "jogo-04", "ordem": 4, "fase": "16 avos", "selecao_1": "Holanda", "selecao_2": "Marrocos", "data_jogo": "29/06/2026"}, {"id": "jogo-05", "ordem": 5, "fase": "16 avos", "selecao_1": "Costa do Marfim", "selecao_2": "Noruega", "data_jogo": "30/06/2026"}, {"id": "jogo-06", "ordem": 6, "fase": "16 avos", "selecao_1": "França", "selecao_2": "Suécia", "data_jogo": "30/06/2026"}, {"id": "jogo-07", "ordem": 7, "fase": "16 avos", "selecao_1": "México", "selecao_2": "3º Grupo C/E/F/H/I", "data_jogo": "30/06/2026"}, {"id": "jogo-08", "ordem": 8, "fase": "16 avos", "selecao_1": "1º Grupo L", "selecao_2": "3º Grupo E/H/I/J/K", "data_jogo": "01/07/2026"}, {"id": "jogo-09", "ordem": 9, "fase": "16 avos", "selecao_1": "Bélgica", "selecao_2": "3º Grupo A/E/H/I/J", "data_jogo": "01/07/2026"}, {"id": "jogo-10", "ordem": 10, "fase": "16 avos", "selecao_1": "Estados Unidos", "selecao_2": "Bósnia e Herzegovina", "data_jogo": "01/07/2026"}, {"id": "jogo-11", "ordem": 11, "fase": "16 avos", "selecao_1": "Espanha", "selecao_2": "2º Grupo J", "data_jogo": "02/07/2026"}, {"id": "jogo-12", "ordem": 12, "fase": "16 avos", "selecao_1": "2º Grupo K", "selecao_2": "2º Grupo L", "data_jogo": "02/07/2026"}, {"id": "jogo-13", "ordem": 13, "fase": "16 avos", "selecao_1": "Suíça", "selecao_2": "3º Grupo E/F/G/I/J", "data_jogo": "03/07/2026"}, {"id": "jogo-14", "ordem": 14, "fase": "16 avos", "selecao_1": "Austrália", "selecao_2": "Egito", "data_jogo": "03/07/2026"}, {"id": "jogo-15", "ordem": 15, "fase": "16 avos", "selecao_1": "Argentina", "selecao_2": "Cabo Verde", "data_jogo": "03/07/2026"}, {"id": "jogo-16", "ordem": 16, "fase": "16 avos", "selecao_1": "1º Grupo K", "selecao_2": "3º Grupo D/E/I/J/L", "data_jogo": "03/07/2026"}];
+    const endpointConfigurado = false;
+    const form = document.getElementById("palpites-form");
+    const postForm = document.getElementById("post-form");
+    const payloadCampo = document.getElementById("payload-campo");
+    const status = document.getElementById("status-envio");
+    const respostaFrame = document.getElementById("resposta-frame");
+
+    function atualizarStatus(texto, classe = "") {
+      status.textContent = texto;
+      status.className = "status" + (classe ? ` ${classe}` : "");
+    }
+
+    function coletarPalpites() {
+      const nome = document.getElementById("nome-participante").value.trim();
+      if (!nome) {
+        throw new Error("Informe seu nome antes de enviar.");
+      }
+
+      const palpites = jogos.map((jogo) => {
+        const inputA = document.querySelector(`[data-jogo-id="${jogo.id}"][data-time="a"]`);
+        const inputB = document.querySelector(`[data-jogo-id="${jogo.id}"][data-time="b"]`);
+
+        if (!inputA.value || !inputB.value) {
+          throw new Error("Preencha todos os placares antes de enviar.");
+        }
+
+        return {
+          jogoId: jogo.id,
+          ordem: jogo.ordem,
+          fase: jogo.fase,
+          dataJogo: jogo.data_jogo,
+          selecao1: jogo.selecao_1,
+          golsSelecao1: Number(inputA.value),
+          selecao2: jogo.selecao_2,
+          golsSelecao2: Number(inputB.value)
+        };
+      });
+
+      return {
+        nome,
+        origem: "palpites.html",
+        enviadoEm: new Date().toISOString(),
+        palpites
+      };
+    }
+
+    respostaFrame.addEventListener("load", () => {
+      if (payloadCampo.value) {
+        atualizarStatus("Palpites enviados. Confira no Google Sheets.", "ok");
+        form.reset();
+        payloadCampo.value = "";
+      }
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      if (!endpointConfigurado) {
+        atualizarStatus("Configure a URL do Google Apps Script no notebook antes de publicar.", "erro");
+        return;
+      }
+
+      try {
+        const payload = coletarPalpites();
+        payloadCampo.value = JSON.stringify(payload);
+        atualizarStatus("Enviando...", "");
+        postForm.submit();
+      } catch (error) {
+        atualizarStatus(error.message, "erro");
+      }
+    });
+  </script>
+</body>
+</html>
