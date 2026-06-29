@@ -255,6 +255,10 @@ iframe {
 
     <section class="painel">
       
+        <div class="alerta">
+          Defina a URL do Web App do Google Apps Script no notebook antes de publicar esta pagina.
+        </div>
+        
 
       <form id="palpites-form">
         <label class="campo-nome">
@@ -773,7 +777,7 @@ iframe {
             
 
         <div class="acoes">
-          <button class="enviar" type="submit" >Enviar palpites</button>
+          <button class="enviar" type="submit" disabled>Enviar palpites</button>
           <div class="status" id="status-envio"></div>
         </div>
       </form>
@@ -787,7 +791,7 @@ iframe {
 
   <script>
     const jogos = [{"id": "jogo-01", "ordem": 1, "fase": "16 avos", "selecao_1": "África do Sul", "selecao_2": "Canadá", "data_jogo": "28/06/2026"}, {"id": "jogo-02", "ordem": 2, "fase": "16 avos", "selecao_1": "Brasil", "selecao_2": "Japão", "data_jogo": "29/06/2026"}, {"id": "jogo-03", "ordem": 3, "fase": "16 avos", "selecao_1": "Alemanha", "selecao_2": "Paraguai", "data_jogo": "29/06/2026"}, {"id": "jogo-04", "ordem": 4, "fase": "16 avos", "selecao_1": "Holanda", "selecao_2": "Marrocos", "data_jogo": "29/06/2026"}, {"id": "jogo-05", "ordem": 5, "fase": "16 avos", "selecao_1": "Costa do Marfim", "selecao_2": "Noruega", "data_jogo": "30/06/2026"}, {"id": "jogo-06", "ordem": 6, "fase": "16 avos", "selecao_1": "França", "selecao_2": "Suécia", "data_jogo": "30/06/2026"}, {"id": "jogo-07", "ordem": 7, "fase": "16 avos", "selecao_1": "México", "selecao_2": "Equador", "data_jogo": "30/06/2026"}, {"id": "jogo-08", "ordem": 8, "fase": "16 avos", "selecao_1": "Inglaterra", "selecao_2": "RD Congo", "data_jogo": "01/07/2026"}, {"id": "jogo-09", "ordem": 9, "fase": "16 avos", "selecao_1": "Bélgica", "selecao_2": "Senegal", "data_jogo": "01/07/2026"}, {"id": "jogo-10", "ordem": 10, "fase": "16 avos", "selecao_1": "Estados Unidos", "selecao_2": "Bósnia", "data_jogo": "01/07/2026"}, {"id": "jogo-11", "ordem": 11, "fase": "16 avos", "selecao_1": "Espanha", "selecao_2": "Áustria", "data_jogo": "02/07/2026"}, {"id": "jogo-12", "ordem": 12, "fase": "16 avos", "selecao_1": "Portugal", "selecao_2": "Croácia", "data_jogo": "02/07/2026"}, {"id": "jogo-13", "ordem": 13, "fase": "16 avos", "selecao_1": "Suíça", "selecao_2": "Argélia", "data_jogo": "03/07/2026"}, {"id": "jogo-14", "ordem": 14, "fase": "16 avos", "selecao_1": "Austrália", "selecao_2": "Egito", "data_jogo": "03/07/2026"}, {"id": "jogo-15", "ordem": 15, "fase": "16 avos", "selecao_1": "Argentina", "selecao_2": "Cabo Verde", "data_jogo": "03/07/2026"}, {"id": "jogo-16", "ordem": 16, "fase": "16 avos", "selecao_1": "Colômbia", "selecao_2": "Gana", "data_jogo": "03/07/2026"}];
-    const endpointConfigurado = https://script.google.com/macros/s/akfycbzqzg-uzuwpbwdoblw970b0frhkvrgjtfvvkhwm1mlhls0e9ntmyvay6e71a1-_mps/exec;
+    const endpointConfigurado = false;
     const form = document.getElementById("palpites-form");
     const postForm = document.getElementById("post-form");
     const payloadCampo = document.getElementById("payload-campo");
@@ -808,9 +812,13 @@ iframe {
       const palpites = jogos.map((jogo) => {
         const inputA = document.querySelector(`[data-jogo-id="${jogo.id}"][data-time="a"]`);
         const inputB = document.querySelector(`[data-jogo-id="${jogo.id}"][data-time="b"]`);
+        const selectClassificado = document.querySelector(`[data-classificado-jogo-id="${jogo.id}"]`);
 
         if (!inputA.value || !inputB.value) {
           throw new Error("Preencha todos os placares antes de enviar.");
+        }
+        if (!selectClassificado || !selectClassificado.value) {
+          throw new Error("Escolha quem se classifica em todos os jogos antes de enviar.");
         }
 
         return {
@@ -821,7 +829,8 @@ iframe {
           selecao1: jogo.selecao_1,
           golsSelecao1: Number(inputA.value),
           selecao2: jogo.selecao_2,
-          golsSelecao2: Number(inputB.value)
+          golsSelecao2: Number(inputB.value),
+          classificado: selectClassificado.value
         };
       });
 
